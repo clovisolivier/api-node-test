@@ -1,0 +1,14 @@
+{
+  "name": "node-api-test",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "fs": "0.0.1-security",
+    "jfs": "^0.2.6",
+    "jsonwebtoken": "^7.1.9",
+    "mongoose": "^4.7.0",
+    "morgan": "^1.7.0",
+    "node-schema-object": "^3.3.4"
+  }
+}
