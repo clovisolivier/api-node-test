@@ -6,9 +6,8 @@ var User = new SchemaObject({
   password: String,
   admin: Boolean
 }
-
 );
 
-// Initialize instance of user 
-var user = new User({name: 'Scott', password: 'Hovestadt', admin: true});
-console.log(user); 
+
+
+module.exports = User;

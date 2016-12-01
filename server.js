@@ -13,7 +13,10 @@ var morgan      = require('morgan');
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config = require('./config'); // get our config file
 var User   = require('./app/models/user'); // get our mongoose model
-    
+
+var db_users = new store("./ressources/users.json", {
+    pretty: true
+});  
 // =======================
 // configuration =========
 // =======================
@@ -37,7 +40,6 @@ app.get('/', function(req, res) {
 });
 
 
-
 app.get('/setup', function(req, res) {
 
   // create a sample user
@@ -46,14 +48,11 @@ app.get('/setup', function(req, res) {
     password: 'password',
     admin: true 
   });
-
-  // save the sample user
-  nick.save(function(err) {
-    if (err) throw err;
-
-    console.log('User saved successfully');
-    res.json({ success: true });
-  });
+  var toto = 'coucou';
+ db_users.save(nick.name,JSON.stringify(nick), function(err,id) {
+                console.log(err);
+            });
+  res.json(nick);
 });
 
 // API ROUTES -------------------
