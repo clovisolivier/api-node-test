@@ -9,6 +9,6 @@
     "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.7.0",
     "morgan": "^1.7.0",
-    "node-schema-object": "^3.3.4"
+    "schema-object": "^4.0.7"
   }
 }

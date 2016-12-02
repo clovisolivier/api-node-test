@@ -5,7 +5,7 @@ var express     = require('express');
 var app         = express();
 var store       = require('jfs');
 var fileSystem  = require('fs');
-var schemaObject = require('node-schema-object');
+var schemaObject = require('schema-object');
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 //var mongoose    = require('mongoose');
@@ -31,6 +31,8 @@ app.use(bodyParser.json());
 // use morgan to log requests to the console
 app.use(morgan('dev'));
 
+
+
 // =======================
 // routes ================
 // =======================
@@ -39,20 +41,27 @@ app.get('/', function(req, res) {
     res.send('Hello! The API is at http://localhost:' + port + '/api');
 });
 
+app.get('/users', function(req, res) {
+    res.render(db_users.allSync());
+});
 
 app.get('/setup', function(req, res) {
 
   // create a sample user
-  var nick = new User({ 
-    name: 'Nick Cerminara', 
-    password: 'password',
-    admin: true 
-  });
-  var toto = 'coucou';
- db_users.save(nick.name,JSON.stringify(nick), function(err,id) {
+  var nick = new User({name:"Nick",password:"password",admin:true});
+  console.log(nick.getDisplayName())
+  db_users.save(nick.name,JSON.stringify(nick), function(err,id) {
                 console.log(err);
             });
   res.json(nick);
+});
+
+app.get('/:username', function(req, res) {
+
+    var username = req.params.username;
+    var user = db_users.getSync(username);
+    console.log(username,user);
+    return res.render(username, user);
 });
 
 // API ROUTES -------------------
