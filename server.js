@@ -5,7 +5,6 @@ var express     = require('express');
 var app         = express();
 var store       = require('jfs');
 var fileSystem  = require('fs');
-var schemaObject = require('schema-object');
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 //var mongoose    = require('mongoose');
@@ -39,6 +38,36 @@ var apiRoutes = express.Router();
 // =======================
 // basic route
 
+// route to authenticate a user (POST http://localhost:8080/api/authenticate)
+apiRoutes.post('/authenticate', function(req, res) {
+ 
+  db_users.get(req.body.name, function(err, user){
+
+    if ( err || !user) {
+      res.json({ success: false, message: 'Authentication failed. User not found.' });
+    } else if (user) {
+
+      // check if password matches
+      if (user.password != req.body.password) {
+        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+      } else {
+
+        // if user is found and password is right
+        // create a token
+        var token = jwt.sign(user, app.get('superSecret'), {
+          expiresIn: '1d' // expires in 24 hours
+        });
+
+        // return the information including token as JSON
+        res.json({
+          success: true,
+          message: 'Enjoy your token!',
+          token: token
+        });
+      }   
+    }
+  });
+});
 
 // route middleware to verify a token
 apiRoutes.use(function(req, res, next) {
@@ -93,40 +122,14 @@ apiRoutes.get('/setup', function(req, res) {
   res.send(nick);
 });
 
-// route to authenticate a user (POST http://localhost:8080/api/authenticate)
-apiRoutes.post('/authenticate', function(req, res) {
- 
-  db_users.get(req.body.name, function(err, user){
-
-    if ( err || !user) {
-      res.json({ success: false, message: 'Authentication failed. User not found.' });
-    } else if (user) {
-
-      // check if password matches
-      if (user.password != req.body.password) {
-        res.json({ success: false, message: 'Authentication failed. Wrong password.' });
-      } else {
-
-        // if user is found and password is right
-        // create a token
-        var token = jwt.sign(user, app.get('superSecret'), {
-          expiresIn: '1d' // expires in 24 hours
-        });
-
-        // return the information including token as JSON
-        res.json({
-          success: true,
-          message: 'Enjoy your token!',
-          token: token
-        });
-      }   
-    }
-  });
-});
 
 
 // apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
+
+apiRoutes.get('/', function(req, res) {
+    res.send('Hello! The API is at http://localhost:' + port + '/api');
+});
 // API ROUTES -------------------
 // we'll get to these in a second
 

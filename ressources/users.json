@@ -1,4 +1,12 @@
 {
-  "Nick erminara": "{\"name\":\"Nick erminara\",\"password\":\"password\",\"admin\":true}",
-  "Nick": "{\"name\":\"Nick\",\"password\":\"password\",\"admin\":true}"
+  "admin": {
+    "name": "admin",
+    "password": "passwordadmin",
+    "admin": true
+  },
+  "user": {
+    "name": "user",
+    "password": "passworduser",
+    "admin": true
+  }
 }

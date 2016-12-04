@@ -1,13 +1,19 @@
 {
   "name": "node-api-test",
   "main": "server.js",
+  "version": "0.0.1",
+  "description": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clovisolivier/api-node-test"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "fs": "0.0.1-security",
     "jfs": "^0.2.6",
     "jsonwebtoken": "^7.1.9",
-    "morgan": "^1.7.0",
-    "schema-object": "^4.0.7"
+    "morgan": "^1.7.0"
   }
 }
