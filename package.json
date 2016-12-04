@@ -7,7 +7,6 @@
     "fs": "0.0.1-security",
     "jfs": "^0.2.6",
     "jsonwebtoken": "^7.1.9",
-    "mongoose": "^4.7.0",
     "morgan": "^1.7.0",
     "schema-object": "^4.0.7"
   }

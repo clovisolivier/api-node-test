@@ -1,23 +1,26 @@
-var SchemaObject = require('node-schema-object');
-var store        = require('jfs');
-
-var db_users = new store("./ressources/users.json", {
-    pretty: true
-});  
-
-// Create User schema 
-var User = new SchemaObject({
-  name: String,
-  password: String,
-  admin: Boolean
-}, {
-  // Add methods to User prototype
-  methods: {
-    getDisplayName: function() {
-      return this.name ;
-    }
-  }
+"use strict";
+// Constructor
+function User(name, password, admin) {
+    this.name = name;
+    this.password = password;
+    this.admin = false;
 }
-);
+
+// class methods
+User.prototype.log = function() {
+    console.log(JSON.stringify(this));
+};
+
+User.prototype.getName = function() {
+  return this.name;
+};
+
+User.prototype.getPassword = function() {
+  return this.password;
+};
+
+User.prototype.getAdmin = function() {
+  return this.admin;
+};
 
 module.exports = User;
