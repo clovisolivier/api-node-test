@@ -26,7 +26,7 @@ apiRoutes.post('/authenticate', function(req, res) {
 
         // if user is found and password is right
         // create a token
-        var token = jwt.sign(user, app.get('superSecret'), {
+        var token = jwt.sign(user, app.get('superSecretUser'), {
           expiresIn: '36h' // expires in 24 hours
         });
 
@@ -54,10 +54,20 @@ apiRoutes.use(function(req, res, next) {
   // decode token
   if (token) {
 
-    // verifies secret and checks exp
-    jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
+    // verifies secret and checks exp 
+    // simple user  
+    jwt.verify(token, app.get('superSecretUser'), function(err, decoded) {      
       if (err) {
-        return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
+        // admin user
+        jwt.verify(token, app.get('superSecretAdmin'), function(err, decoded) {      
+        if (err) {
+          return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
+        } else {
+          // if everything is good, save to request for use in other routes
+          req.decoded = decoded;    
+          next();
+        }
+      }); 
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;    

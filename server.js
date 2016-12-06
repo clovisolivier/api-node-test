@@ -22,8 +22,8 @@ var db_users = new store("./ressources/users.json", {
 // =======================
 var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
 //mongoose.connect(config.database); // connect to database
-app.set('superSecret', config.secret); // secret variable
-
+app.set('superSecretAdmin', config.secretAdmin); // secret variable
+app.set('superSecretUser', config.secretUser); // secret variable
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

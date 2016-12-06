@@ -1,5 +1,6 @@
 module.exports = {
 
-    'secret': 'CreateBySivolc'
+    'secretAdmin': 'CreateBySivolc',
+    'secretUser': 'SivolcCreateThis'
 
 };

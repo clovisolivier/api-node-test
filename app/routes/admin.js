@@ -29,7 +29,7 @@ adminRoutes.post('/authenticate', function(req, res) {
 
             // if user is found and password is right
             // create a token
-            var token = jwt.sign(user, app.get('superSecret'), {
+            var token = jwt.sign(user, app.get('superSecretAdmin'), {
             expiresIn: '36h' // expires in 24 hours
             });
 
@@ -58,7 +58,7 @@ adminRoutes.use(function(req, res, next) {
   if (token) {
 
     // verifies secret and checks exp
-    jwt.verify(token, app.get('superSecret'), function(err, decoded) {      
+    jwt.verify(token, app.get('superSecretAdmin'), function(err, decoded) {      
       if (err) {
         return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
       } else {
