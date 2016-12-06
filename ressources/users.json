@@ -7,6 +7,6 @@
   "user": {
     "name": "user",
     "password": "passworduser",
-    "admin": true
+    "admin": false
   }
 }
