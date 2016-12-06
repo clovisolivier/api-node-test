@@ -4,6 +4,7 @@
 module.exports = function(app, express, jwt, db_users ) {
 // get an instance of the router for api routes
 var adminRoutes = express.Router(); 
+var validatorTool = require('../tools/validator.js');
 // =======================
 // routes ================
 // =======================
@@ -11,7 +12,10 @@ var adminRoutes = express.Router();
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
 adminRoutes.post('/authenticate', function(req, res) {
- 
+  
+  // validate input format
+  validatorTool.validateAuthentificate(app, req, res);
+  
   db_users.get(req.body.name, function(err, user){
 
     if ( err || !user) {
@@ -89,13 +93,16 @@ adminRoutes.get('/user/:username', function(req, res) {
     res.send(db_users.getSync(req.params.username));
 });
 
+// add new user
 adminRoutes.post('/user', function(req, res) {
+  // validate input format
+  validatorTool.validateAddUser(app, req, res);
+
     db_users.save(req.body.name,req.body, function(err,id) {
-                console.log(err || id);
                 if (err)
                 return res.status(500).json({ success: false, message: 'Failed to save user' });    
             });
-    res.send(res.send(req.body));
+    res.send(req.body);
 });
 
 adminRoutes.get('/setup', function(req, res) {

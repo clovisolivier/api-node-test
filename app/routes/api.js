@@ -13,6 +13,9 @@ var apiRoutes = express.Router();
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
 apiRoutes.post('/authenticate', function(req, res) {
  
+  // validate input format
+  validatorTool.validateAuthentificate(app, req, res);
+
   db_users.get(req.body.name, function(err, user){
 
     if ( err || !user) {

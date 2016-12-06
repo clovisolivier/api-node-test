@@ -6,6 +6,7 @@ var app         = express();
 var store       = require('jfs');
 var fileSystem  = require('fs');
 var bodyParser  = require('body-parser');
+var expressValidator = require('express-validator');
 var morgan      = require('morgan');
 //var mongoose    = require('mongoose');
 
@@ -27,6 +28,7 @@ app.set('superSecretUser', config.secretUser); // secret variable
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(expressValidator());
 
 // use morgan to log requests to the console
 app.use(morgan('dev'));
