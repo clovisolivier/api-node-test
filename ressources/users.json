@@ -8,5 +8,10 @@
     "name": "user",
     "password": "passworduser",
     "admin": false
+  },
+  "admin2": {
+    "name": "admin2",
+    "password": "passwordadmin",
+    "admin": "false"
   }
 }

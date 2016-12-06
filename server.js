@@ -214,6 +214,15 @@ adminRoutes.get('/user/:username', function(req, res) {
     res.send(db_users.getSync(req.params.username));
 });
 
+adminRoutes.post('/user', function(req, res) {
+    db_users.save(req.body.name,req.body, function(err,id) {
+                console.log(err || id);
+                if (err)
+                return res.status(500).json({ success: false, message: 'Failed to save user' });    
+            });
+    res.send(res.send(req.body));
+});
+
 adminRoutes.get('/setup', function(req, res) {
   // create a sample user
   var nick = new User({name:"Nick",password:"password",admin:true});
@@ -224,6 +233,8 @@ adminRoutes.get('/setup', function(req, res) {
 });
 // apply the routes to our application with the prefix /api
 app.use('/admin', adminRoutes);
+
+
 
 app.get('/', function(req, res) {
     res.send('Hello! The API is at http://localhost:' + port + '/');
