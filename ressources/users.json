@@ -2,11 +2,13 @@
   "admin": {
     "name": "admin",
     "password": "passwordadmin",
-    "admin": true
+    "admin": true,
+    "undeletable": true
   },
   "user": {
     "name": "user",
     "password": "passworduser",
-    "admin": false
+    "admin": false,
+    "undeletable": true
   }
 }

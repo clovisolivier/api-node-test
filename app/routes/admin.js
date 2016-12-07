@@ -49,9 +49,7 @@ adminRoutes.post('/authenticate', function(req, res) {
   });
 });
 
-adminRoutes.get('/', function(req, res) {
-    res.send('Hello! The API is admin only');
-});
+
 // route middleware to verify a token
 adminRoutes.use(function(req, res, next) {
 
@@ -84,11 +82,16 @@ adminRoutes.use(function(req, res, next) {
   }
 });
 
+adminRoutes.get('/', function(req, res) {
+    res.send('Hello! The API is admin only');
+});
 
+// show all users
 adminRoutes.get('/users', function(req, res) {
     res.send(db_users.allSync());
 });
 
+// show specific user
 adminRoutes.get('/user/:username', function(req, res) {
     res.send(db_users.getSync(req.params.username));
 });
@@ -97,21 +100,37 @@ adminRoutes.get('/user/:username', function(req, res) {
 adminRoutes.post('/user', function(req, res) {
   // validate input format
   validatorTool.validateAddUser(app, req, res);
-
-    db_users.save(req.body.name,req.body, function(err,id) {
-                if (err)
-                return res.status(500).json({ success: false, message: 'Failed to save user' });    
-            });
-    res.send(req.body);
+  req.body.undeletable = false;
+  db_users.save(req.body.name,req.body, function(err,id) {
+    if (err)
+    return res.status(500).json({ success: false, message: 'Failed to save user' });    
+  });
+  
+  res.send(req.body);
 });
 
-adminRoutes.get('/setup', function(req, res) {
-  // create a sample user
-  var nick = new User({name:"Nick",password:"password",admin:true});
-  db_users.save(nick.getName(),nick, function(err,id) {
-                console.log(err);
-            });
-  res.send(nick);
+// delete user
+adminRoutes.delete('/user', function(req, res) {
+  // validate input format
+  validatorTool.validateDeleteUser(app, req, res);
+ var user ;
+  db_users.get(req.body.name, function(err, obj){
+      user =obj;
+      if (err)
+        res.send(req.body);
+      });
+
+  if (!(user.undeletable)){
+  db_users.delete(req.body.name, function(err){
+    if (err)
+    return res.status(500).json({ success: false, message: 'Failed to delete user' });   
+  });
+  } else {
+    return res.status(200).json({ success: false, message: 'Not allowed to delete this user' });  
+  }
+  
+  res.send(req.body);
+
 });
 
 app.use('/admin', adminRoutes);

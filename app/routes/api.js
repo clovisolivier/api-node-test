@@ -44,9 +44,6 @@ apiRoutes.post('/authenticate', function(req, res) {
   });
 });
 
-apiRoutes.get('/', function(req, res) {
-    res.send('Hello! The API need to be logged');
-});
 
 // route middleware to verify a token
 apiRoutes.use(function(req, res, next) {
@@ -90,21 +87,8 @@ apiRoutes.use(function(req, res, next) {
   }
 });
 
-apiRoutes.get('/users', function(req, res) {
-    res.send(db_users.allSync());
-});
-
-apiRoutes.get('/user/:username', function(req, res) {
-    res.send(db_users.getSync(req.params.username));
-});
-
-apiRoutes.get('/setup', function(req, res) {
-  // create a sample user
-  var nick = new User({name:"Nick",password:"password",admin:true});
-  db_users.save(nick.getName(),nick, function(err,id) {
-                console.log(err);
-            });
-  res.send(nick);
+apiRoutes.get('/', function(req, res) {
+    res.send('Hello! You can access API endpoint!');
 });
 
 // apply the routes to our application with the prefix /api

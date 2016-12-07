@@ -32,5 +32,16 @@ module.exports = {
             res.status(400).send(errors);
             return;
         }
+    },
+        // validate add user input format
+    validateDeleteUser : function(app, req, res) {
+        
+        req.checkBody( "name", "Required").notEmpty();
+
+        var errors = req.validationErrors();
+        if (errors) {
+            res.status(400).send(errors);
+            return;
+        }
     }
 };
