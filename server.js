@@ -17,7 +17,7 @@ var UserMongo  = require('./app/models/user.mongo');
 // configuration =========
 // =======================
 var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
-mongoose.connect(config.database); // connect to database
+mongoose.connect(process.env.MONGODB_URI || config.database); // connect to database
 
 app.set('superSecretAdmin', config.secretAdmin); // secret variable
 app.set('superSecretUser', config.secretUser); // secret variable
