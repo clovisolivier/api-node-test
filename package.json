@@ -15,9 +15,9 @@
     "fs": "0.0.1-security",
     "jfs": "^0.2.6",
     "jsonwebtoken": "^7.1.9",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "mongoose": "^4.7.2"
   },
   "devDependencies": {
-    "mongoose": "^4.7.2"
   }
 }
