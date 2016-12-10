@@ -1,24 +1,29 @@
 "use strict";
 
 //module.exports = function(io, app, Global, db_produits, db_backup, fs) {
-module.exports = function(app, express, jwt, db_users ) {
+module.exports = function(app, express, jwt ) {
 // get an instance of the router for api routes
 var adminRoutes = express.Router(); 
-var validatorTool = require('../tools/validator.js');
+//var validatorTool = require('../tools/validator.js');
+
+var UserMongo  = require('./../models/user.mongo');
 // =======================
 // routes ================
 // =======================
 // basic route
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
-adminRoutes.post('/authenticate', function(req, res) {
-  
-  // validate input format
-  validatorTool.validateAuthentificate(app, req, res);
-  
-  db_users.get(req.body.name, function(err, user){
 
-    if ( err || !user) {
+adminRoutes.post('/authenticate', function(req, res) {
+
+  // find the user
+  UserMongo.findOne({
+    name: req.body.name
+  }, function(err, user) {
+
+    if (err) throw err;
+
+    if (!user) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });
     } else if (user) {
 
@@ -27,25 +32,27 @@ adminRoutes.post('/authenticate', function(req, res) {
         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
       } else {
 
-        if (user.admin != true) {
-          res.json({ success: false, message: 'You are not admin.' });
+        if (!user.admin) {
+        res.json({ success: false, message: 'Authentication failed. You are not admin' });
         } else {
+          // if user is found and password is right
+          // create a token
 
-            // if user is found and password is right
-            // create a token
-            var token = jwt.sign(user, app.get('superSecretAdmin'), {
-            expiresIn: '36h' // expires in 24 hours
-            });
+          var token = jwt.sign(user, app.get('superSecretAdmin'), {
+            expiresIn: 1440 // expires in 24 hours
+          });
 
-            // return the information including token as JSON
-            res.json({
+          // return the information including token as JSON
+          res.json({
             success: true,
             message: 'Enjoy your token!',
             token: token
-            });
-        }
+          });
+          }
       }   
+
     }
+
   });
 });
 
@@ -58,7 +65,6 @@ adminRoutes.use(function(req, res, next) {
 
   // decode token
   if (token) {
-
     // verifies secret and checks exp
     jwt.verify(token, app.get('superSecretAdmin'), function(err, decoded) {      
       if (err) {
@@ -86,50 +92,51 @@ adminRoutes.get('/', function(req, res) {
     res.send('Hello! The API is admin only');
 });
 
-// show all users
 adminRoutes.get('/users', function(req, res) {
-    res.send(db_users.allSync());
+
+  UserMongo.find({  }, function (err, docs) {
+    // docs is an array
+    if (err) throw err;
+
+    if (!docs) {
+      res.status(204);
+    } else if (docs) {
+      res.json(docs);
+    }   
+  });
+
 });
+
 
 // show specific user
 adminRoutes.get('/user/:username', function(req, res) {
-    res.send(db_users.getSync(req.params.username));
+  UserMongo.find({ 
+    name : req.params.username
+   }, function (err, user) {
+    // docs is an array
+    if (err) throw err;
+
+    if (!user) {
+      res.status(204);
+    } else if (user) {
+      res.json(user);
+    }   
+  });
 });
 
-// add new user
-adminRoutes.post('/user', function(req, res) {
-  // validate input format
-  validatorTool.validateAddUser(app, req, res);
-  req.body.undeletable = false;
-  db_users.save(req.body.name,req.body, function(err,id) {
-    if (err)
-    return res.status(500).json({ success: false, message: 'Failed to save user' });    
-  });
-  
-  res.send(req.body);
-});
 
 // delete user
-adminRoutes.delete('/user', function(req, res) {
+adminRoutes.delete('/user/:username', function(req, res) {
   // validate input format
-  validatorTool.validateDeleteUser(app, req, res);
- var user ;
-  db_users.get(req.body.name, function(err, obj){
-      user =obj;
-      if (err)
-        res.send(req.body);
-      });
+ // validatorTool.validateDeleteUser(app, req, res);
+  UserMongo.remove({
+    name : req.params.username
+  }, function(err){
 
-  if (!(user.undeletable)){
-  db_users.delete(req.body.name, function(err){
-    if (err)
-    return res.status(500).json({ success: false, message: 'Failed to delete user' });   
+    if (err) throw err;
   });
-  } else {
-    return res.status(200).json({ success: false, message: 'Not allowed to delete this user' });  
-  }
   
-  res.send(req.body);
+  res.status(204).send();
 
 });
 

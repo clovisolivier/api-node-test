@@ -1,24 +1,30 @@
 "use strict";
 
 //module.exports = function(io, app, Global, db_produits, db_backup, fs) {
-module.exports = function(app, express, jwt, db_users ) {
+module.exports = function(app, express, jwt ) {
 
 // get an instance of the router for api routes
 var apiRoutes = express.Router(); 
+
+
+var UserMongo  = require('./../models/user.mongo');
 // =======================
 // routes ================
 // =======================
 // basic route
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
+
 apiRoutes.post('/authenticate', function(req, res) {
- 
-  // validate input format
-  validatorTool.validateAuthentificate(app, req, res);
 
-  db_users.get(req.body.name, function(err, user){
+  // find the user
+  UserMongo.findOne({
+    name: req.body.name
+  }, function(err, user) {
 
-    if ( err || !user) {
+    if (err) throw err;
+
+    if (!user) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });
     } else if (user) {
 
@@ -29,8 +35,9 @@ apiRoutes.post('/authenticate', function(req, res) {
 
         // if user is found and password is right
         // create a token
+
         var token = jwt.sign(user, app.get('superSecretUser'), {
-          expiresIn: '36h' // expires in 24 hours
+          expiresIn: 1440 // expires in 24 hours
         });
 
         // return the information including token as JSON
@@ -40,9 +47,12 @@ apiRoutes.post('/authenticate', function(req, res) {
           token: token
         });
       }   
+
     }
+
   });
 });
+
 
 
 // route middleware to verify a token

@@ -1,6 +1,7 @@
 module.exports = {
 
     'secretAdmin': 'CreateBySivolc',
-    'secretUser': 'SivolcCreateThis'
+    'secretUser': 'SivolcCreateThis',
+    'database': 'mongodb://localhost:27017/trialwsp'
 
 };
